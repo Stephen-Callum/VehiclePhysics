@@ -12,6 +12,8 @@ ABaseVehicle::ABaseVehicle()
 
 	VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
 	VehicleMesh->SetSimulatePhysics(true);
+	VehicleMesh->SetMassOverrideInKg("NAME_None", 1000.0f, true);
+	VehicleMesh->SetCenterOfMass(FVector(0, 0, -40));
 	RootComponent = VehicleMesh;
 
 	// Create spring arm and camera, attach spring arm to root and camera to spring arm
@@ -21,8 +23,8 @@ ABaseVehicle::ABaseVehicle()
 	Camera->AttachToComponent(SpringArm, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
 
 	// Add vehicle movement component
-	VehicleMovementComponent = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
-	VehicleMovementComponent->SetVehicleMesh(VehicleMesh);
+	VehicleMovement = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
+	VehicleMovement->SetVehicleMesh(VehicleMesh);
 
 	// Create and add WheelPoint to mesh
 	Wheel01 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
@@ -34,6 +36,11 @@ ABaseVehicle::ABaseVehicle()
 	Wheel02->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	Wheel03->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	Wheel04->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+
+	Wheel01->VehicleMovementRef = VehicleMovement;
+	Wheel02->VehicleMovementRef = VehicleMovement;
+	Wheel03->VehicleMovementRef = VehicleMovement;
+	Wheel04->VehicleMovementRef = VehicleMovement;
 
 }
 
@@ -77,9 +84,9 @@ void ABaseVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ABaseVehicle::ApplyUpwardImpulse()
 {
-	if (VehicleMovementComponent)
+	if (VehicleMovement)
 	{
-		VehicleMovementComponent->AddUpwardImpulse();
+		VehicleMovement->AddUpwardImpulse();
 	}
 	else
 	{

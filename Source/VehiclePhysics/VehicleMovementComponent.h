@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/MovementComponent.h"
+#include "Components/ActorComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "VehicleMovementComponent.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class VEHICLEPHYSICS_API UVehicleMovementComponent : public UMovementComponent
+class VEHICLEPHYSICS_API UVehicleMovementComponent : public UActorComponent
 {
 	GENERATED_BODY()
 

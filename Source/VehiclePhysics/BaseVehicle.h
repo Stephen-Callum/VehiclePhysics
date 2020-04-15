@@ -47,7 +47,7 @@ public:
 
 protected:
 	
-	UVehicleMovementComponent* VehicleMovementComponent;
+	UVehicleMovementComponent* VehicleMovement;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

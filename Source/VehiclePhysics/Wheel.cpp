@@ -12,7 +12,6 @@ UWheel::UWheel()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	
 }
 
 
@@ -31,10 +30,10 @@ void UWheel::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	Suspension();
+	Suspension(DeltaTime);
 }
 
-void UWheel::Suspension()
+void UWheel::Suspension(float DeltaTime)
 {
 	// Raycast to the ground
 	// Hit contains information about what the raycast hit
@@ -67,17 +66,20 @@ void UWheel::Suspension()
 	{
 		CompressionAmount = 0;
 	}
-	
+
+	float CompressionDifference = PreviousCompression - CompressionAmount;
+
 	float CompressionRatio = CompressionAmount / SuspensionHeight;
 
-	auto VehicleMesh = VehicleMovementComponent->GetVehicleMesh();
+	auto VehicleMesh = VehicleMovementRef->GetVehicleMesh();
 
-	FVector Force = GetUpVector() * -1 * CompressionRatio * VehicleMesh->GetMass() * 100;
+	FVector Force = GetUpVector() * CompressionDifference * VehicleMesh->GetMass() * 1000;
 
 	VehicleMesh->AddForceAtLocation(Force, GetComponentLocation());
 
-	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("DistanceToGround: %f SuspensionHeight: %f"), CompressionAmount, SuspensionHeight), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("ForceLength: %f CompressionDifference: %f"), Force.Size(), CompressionDifference), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
 
-		// ApplyForce Upwards (direction of raycast)
+	PreviousCompression = CompressionAmount;
+
 }
 

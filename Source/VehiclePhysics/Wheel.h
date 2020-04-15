@@ -17,9 +17,11 @@ public:
 	// Sets default values for this component's properties
 	UWheel();
 
-	UVehicleMovementComponent* VehicleMovementComponent;
+	UVehicleMovementComponent* VehicleMovementRef;
 
 	float SuspensionHeight;
+
+	float PreviousCompression = 0;
 
 protected:
 	// Called when the game starts
@@ -30,5 +32,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
-	void Suspension();
+	void Suspension(float DeltaTime);
 };

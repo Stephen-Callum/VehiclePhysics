@@ -15,7 +15,7 @@ void UVehicleMovementComponent::AddUpwardImpulse()
 	if (VehicleMesh)
 	{
 		UKismetSystemLibrary::PrintString(this, "Adding upward Impulse", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-		VehicleMesh->AddImpulseAtLocation(FVector(0, 0, 500 * VehicleMesh->GetMass()), FVector(0, 0, -70) + VehicleMesh->GetComponentLocation());
+		VehicleMesh->AddImpulseAtLocation(FVector(0, 0, 500000), FVector(0, 0, -70) + VehicleMesh->GetComponentLocation());
 	}
 	else
 	{
