@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "VehiclePhysics/VehicleMovementComponent.h"
 #include "Wheel.generated.h"
 
 
@@ -16,7 +17,10 @@ public:
 	// Sets default values for this component's properties
 	UWheel();
 
+	UVehicleMovementComponent* VehicleMovementComponent;
+
 	float SuspensionHeight;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

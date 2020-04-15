@@ -21,33 +21,29 @@ ABaseVehicle::ABaseVehicle()
 	Camera->AttachToComponent(SpringArm, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
 
 	// Add vehicle movement component
-	VehicleMovementComp = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
-	VehicleMovementComp->SetVehicleMesh(VehicleMesh);
+	VehicleMovementComponent = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
+	VehicleMovementComponent->SetVehicleMesh(VehicleMesh);
 
 	// Create and add WheelPoint to mesh
-	Wheel1 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
-	Wheel2 = CreateDefaultSubobject<UWheel>(TEXT("Wheel2"));
-	Wheel3 = CreateDefaultSubobject<UWheel>(TEXT("Wheel3"));
-	Wheel4 = CreateDefaultSubobject<UWheel>(TEXT("Wheel4"));
+	Wheel01 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
+	Wheel02 = CreateDefaultSubobject<UWheel>(TEXT("Wheel2"));
+	Wheel03 = CreateDefaultSubobject<UWheel>(TEXT("Wheel3"));
+	Wheel04 = CreateDefaultSubobject<UWheel>(TEXT("Wheel4"));
 
-	Wheel1->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-	Wheel2->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-	Wheel3->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-	Wheel4->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel01->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel02->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel03->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel04->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 
-	// Set Wheel Suspension
-	Wheel1->SuspensionHeight = SuspensionHeight;
-	Wheel2->SuspensionHeight = SuspensionHeight;
-	Wheel3->SuspensionHeight = SuspensionHeight;
-	Wheel4->SuspensionHeight = SuspensionHeight;
 }
-
 
 // Called when the game starts or when spawned
 void ABaseVehicle::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	
+
 }
 
 // Called every frame
@@ -55,6 +51,20 @@ void ABaseVehicle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Wheel01 && Wheel02 && Wheel03 && Wheel04)
+	{
+		SetSuspensionHeight();
+
+	}
+}
+
+void ABaseVehicle::SetSuspensionHeight()
+{
+	// Set Wheel Suspension
+	Wheel01->SuspensionHeight = SuspensionHeight;
+	Wheel02->SuspensionHeight = SuspensionHeight;
+	Wheel03->SuspensionHeight = SuspensionHeight;
+	Wheel04->SuspensionHeight = SuspensionHeight;
 }
 
 // Called to bind functionality to input
@@ -67,9 +77,9 @@ void ABaseVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ABaseVehicle::ApplyUpwardImpulse()
 {
-	if (VehicleMovementComp)
+	if (VehicleMovementComponent)
 	{
-		VehicleMovementComp->AddUpwardImpulse();
+		VehicleMovementComponent->AddUpwardImpulse();
 	}
 	else
 	{

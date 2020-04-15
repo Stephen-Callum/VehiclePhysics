@@ -30,31 +30,33 @@ public:
 	UPROPERTY(EditAnywhere, Category = "VehicleCamera")
 	UCameraComponent* Camera;
 
-	UPROPERTY(VisibleAnywhere, Category = "Movement Properties")
-	UVehicleMovementComponent* VehicleMovementComp;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
+	UWheel* Wheel01;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-		UWheel* Wheel1;
+	UWheel* Wheel02;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-		UWheel* Wheel2;
+	UWheel* Wheel03;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-		UWheel* Wheel3;
+	UWheel* Wheel04;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-		UWheel* Wheel4;
-
-	UPROPERTY(EditAnywhere, Category = "WheelSuspension")
-	float SuspensionHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelSuspension")
+	float SuspensionHeight = 0.f;
 
 protected:
+	
+	UVehicleMovementComponent* VehicleMovementComponent;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void SetSuspensionHeight();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
