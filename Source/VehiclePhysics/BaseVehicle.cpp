@@ -27,20 +27,20 @@ ABaseVehicle::ABaseVehicle()
 	VehicleMovement->SetVehicleMesh(VehicleMesh);
 
 	// Create and add WheelPoint to mesh
-	Wheel01 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
-	Wheel02 = CreateDefaultSubobject<UWheel>(TEXT("Wheel2"));
-	Wheel03 = CreateDefaultSubobject<UWheel>(TEXT("Wheel3"));
-	Wheel04 = CreateDefaultSubobject<UWheel>(TEXT("Wheel4"));
+	Wheel1 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
+	Wheel2 = CreateDefaultSubobject<UWheel>(TEXT("Wheel2"));
+	Wheel3 = CreateDefaultSubobject<UWheel>(TEXT("Wheel3"));
+	Wheel4 = CreateDefaultSubobject<UWheel>(TEXT("Wheel4"));
 
-	Wheel01->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-	Wheel02->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-	Wheel03->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
-	Wheel04->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel1->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel2->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel3->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+	Wheel4->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 
-	Wheel01->VehicleMovementRef = VehicleMovement;
-	Wheel02->VehicleMovementRef = VehicleMovement;
-	Wheel03->VehicleMovementRef = VehicleMovement;
-	Wheel04->VehicleMovementRef = VehicleMovement;
+	Wheel1->VehicleMovementRef = VehicleMovement;
+	Wheel2->VehicleMovementRef = VehicleMovement;
+	Wheel3->VehicleMovementRef = VehicleMovement;
+	Wheel4->VehicleMovementRef = VehicleMovement;
 
 }
 
@@ -58,20 +58,32 @@ void ABaseVehicle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Wheel01 && Wheel02 && Wheel03 && Wheel04)
+	// BeginPlay
+	if (Wheel1 && Wheel2 && Wheel3 && Wheel4)
 	{
-		SetSuspensionHeight();
-
+		SetWheelProperties();
 	}
 }
 
-void ABaseVehicle::SetSuspensionHeight()
+void ABaseVehicle::SetWheelProperties()
 {
 	// Set Wheel Suspension
-	Wheel01->SuspensionHeight = SuspensionHeight;
-	Wheel02->SuspensionHeight = SuspensionHeight;
-	Wheel03->SuspensionHeight = SuspensionHeight;
-	Wheel04->SuspensionHeight = SuspensionHeight;
+	Wheel1->SuspensionHeight = SuspensionHeight;
+	Wheel2->SuspensionHeight = SuspensionHeight;
+	Wheel3->SuspensionHeight = SuspensionHeight;
+	Wheel4->SuspensionHeight = SuspensionHeight;
+
+	// Set Suspension Spring Coefficient
+	Wheel1->SpringCoefficient = SpringCoefficient;
+	Wheel2->SpringCoefficient = SpringCoefficient;
+	Wheel3->SpringCoefficient = SpringCoefficient;
+	Wheel4->SpringCoefficient = SpringCoefficient;
+
+	// Set Dampening Coefficient
+	Wheel1->DampeningCoefficient = DampeningCoefficient;
+	Wheel2->DampeningCoefficient = DampeningCoefficient;
+	Wheel3->DampeningCoefficient = DampeningCoefficient;
+	Wheel4->DampeningCoefficient = DampeningCoefficient;
 }
 
 // Called to bind functionality to input

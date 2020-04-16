@@ -31,19 +31,25 @@ public:
 	UCameraComponent* Camera;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-	UWheel* Wheel01;
+	UWheel* Wheel1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-	UWheel* Wheel02;
+	UWheel* Wheel2;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-	UWheel* Wheel03;
+	UWheel* Wheel3;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
-	UWheel* Wheel04;
+	UWheel* Wheel4;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelSuspension")
-	float SuspensionHeight = 0.f;
+	float SuspensionHeight;
+
+	UPROPERTY(EditAnywhere, Category = "WheelSuspension")
+	float SpringCoefficient;
+	
+	UPROPERTY(EditAnywhere, Category = "WheelSuspension")
+	float DampeningCoefficient;
 
 protected:
 	
@@ -56,7 +62,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetSuspensionHeight();
+	void SetWheelProperties();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

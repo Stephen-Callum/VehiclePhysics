@@ -21,7 +21,13 @@ public:
 
 	float SuspensionHeight;
 
-	float PreviousCompression = 0;
+	float SpringCompressionDelta;
+
+	float PreviousCompressionDelta = 0;
+
+	float SpringCoefficient;
+
+	float DampeningCoefficient;
 
 protected:
 	// Called when the game starts
@@ -32,5 +38,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
-	void Suspension(float DeltaTime);
+	void Suspension();
 };

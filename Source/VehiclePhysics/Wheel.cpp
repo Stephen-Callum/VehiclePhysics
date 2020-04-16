@@ -30,10 +30,10 @@ void UWheel::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	Suspension(DeltaTime);
+	Suspension();
 }
 
-void UWheel::Suspension(float DeltaTime)
+void UWheel::Suspension()
 {
 	// Raycast to the ground
 	// Hit contains information about what the raycast hit
@@ -59,27 +59,26 @@ void UWheel::Suspension(float DeltaTime)
 	// Draw debug line
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Green, true, -1, 0, 1.f);
 
-	// If DistanceToGround <= SuspensionHeight
-	float CompressionAmount = SuspensionHeight - Hit.Distance;
-
-	if (!Hit.bBlockingHit)
+	// If line trace hits
+	if (Hit.bBlockingHit)
 	{
-		CompressionAmount = 0;
+		// Set compression delta
+		SpringCompressionDelta = SuspensionHeight - Hit.Distance;
+
+		// Calculate upwards force (F=kx)
+		float Force = SpringCoefficient * SpringCompressionDelta;
+
+		// Calculate Dampening d
+		float Dampening = ((SpringCompressionDelta - PreviousCompressionDelta) / GetWorld()->DeltaTimeSeconds) * DampeningCoefficient;
+
+		float SpringForce = Force + Dampening;
+
+		UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("WorldDeltaTime: %f Dampening: %f SpringForce: %f"), GetWorld()->DeltaTimeSeconds, Dampening, SpringForce), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+		
+		// ApplyForceAtLocation(F+d, componentlocation);
+		VehicleMovementRef->VehicleMesh->AddForceAtLocation(GetUpVector() * SpringForce, GetComponentLocation());
 	}
 
-	float CompressionDifference = PreviousCompression - CompressionAmount;
-
-	float CompressionRatio = CompressionAmount / SuspensionHeight;
-
-	auto VehicleMesh = VehicleMovementRef->GetVehicleMesh();
-
-	FVector Force = GetUpVector() * CompressionDifference * VehicleMesh->GetMass() * 1000;
-
-	VehicleMesh->AddForceAtLocation(Force, GetComponentLocation());
-
-	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("ForceLength: %f CompressionDifference: %f"), Force.Size(), CompressionDifference), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-
-	PreviousCompression = CompressionAmount;
-
+	PreviousCompressionDelta = SpringCompressionDelta;
 }
 
