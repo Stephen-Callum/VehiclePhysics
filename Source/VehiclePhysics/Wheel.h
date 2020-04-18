@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
 #include "VehiclePhysics/VehicleMovementComponent.h"
+#include "Engine/EngineTypes.h"
 #include "Wheel.generated.h"
 
 
@@ -28,6 +29,12 @@ public:
 	float SpringCoefficient;
 
 	float DampeningCoefficient;
+
+	float SpringCompressionRatio;
+
+	FHitResult Hit;
+
+	FVector TraceEndLocation;
 
 protected:
 	// Called when the game starts

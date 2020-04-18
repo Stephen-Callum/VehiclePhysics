@@ -42,15 +42,25 @@ ABaseVehicle::ABaseVehicle()
 	Wheel3->VehicleMovementRef = VehicleMovement;
 	Wheel4->VehicleMovementRef = VehicleMovement;
 
+	// Create wheel array
+	VehicleWheelArray.Emplace(Wheel1);
+	VehicleWheelArray.Emplace(Wheel2);
+	VehicleWheelArray.Emplace(Wheel3);
+	VehicleWheelArray.Emplace(Wheel4);
+
+	// Give reference for wheels to VehicleMovementComponent
+	VehicleMovement->SetVehicleWheels(VehicleWheelArray);
 }
 
 // Called when the game starts or when spawned
 void ABaseVehicle::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	
 
+	if (Wheel1 && Wheel2 && Wheel3 && Wheel4)
+	{
+		SetWheelProperties();
+	}
 }
 
 // Called every frame
@@ -58,13 +68,10 @@ void ABaseVehicle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// BeginPlay
-	if (Wheel1 && Wheel2 && Wheel3 && Wheel4)
-	{
-		SetWheelProperties();
-	}
+	AccelerateBrake(Throttle);
 }
 
+// REFACTOR
 void ABaseVehicle::SetWheelProperties()
 {
 	// Set Wheel Suspension
@@ -92,6 +99,19 @@ void ABaseVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("ForceUp", IE_Pressed, this, &ABaseVehicle::ApplyUpwardImpulse);
+
+	PlayerInputComponent->BindAxis("AccelerateBrake", this, &ABaseVehicle::AccelerateBrake);
+}
+
+void ABaseVehicle::AccelerateBrake(float Value)
+{
+	Throttle = Value;
+	if (Value != 0 && VehicleMovement)
+	{
+		UKismetSystemLibrary::PrintString(this, "Base Vehicle Throttle pressed", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+
+		VehicleMovement->Accelerate(Value);
+	}
 }
 
 void ABaseVehicle::ApplyUpwardImpulse()

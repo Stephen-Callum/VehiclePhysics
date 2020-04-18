@@ -30,16 +30,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "VehicleCamera")
 	UCameraComponent* Camera;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
 	UWheel* Wheel1;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
 	UWheel* Wheel2;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
 	UWheel* Wheel3;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Wheels")
 	UWheel* Wheel4;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelSuspension")
@@ -51,6 +47,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "WheelSuspension")
 	float DampeningCoefficient;
 
+	TArray<UWheel*> VehicleWheelArray;
+
+	float Throttle;
+
 protected:
 	
 	UVehicleMovementComponent* VehicleMovement;
@@ -61,7 +61,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
+	UFUNCTION()
 	void SetWheelProperties();
 
 	// Called to bind functionality to input
@@ -69,5 +70,8 @@ public:
 
 	UFUNCTION()
 	void ApplyUpwardImpulse();
+
+	UFUNCTION()
+	void AccelerateBrake(float Value);
 
 };
