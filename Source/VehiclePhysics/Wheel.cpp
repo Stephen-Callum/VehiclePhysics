@@ -47,9 +47,9 @@ void UWheel::Suspension()
 	// Perform line trace
 	// EcollisionChannel used in order to determine what we are looking for from the raycast
 	GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, TraceEndLocation, ECollisionChannel::ECC_WorldDynamic, CollisionParameters);
-
+	
 	// Draw debug line
-	DrawDebugLine(GetWorld(), StartLocation, TraceEndLocation, FColor::Green, true, -1, 0, 1.f);
+	DrawDebugLine(GetWorld(), StartLocation, TraceEndLocation, FColor::Green, true, -1, 0, 3.f);
 
 	// If line trace hits
 	if (Hit.bBlockingHit)

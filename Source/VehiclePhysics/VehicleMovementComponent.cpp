@@ -12,6 +12,8 @@ UVehicleMovementComponent::UVehicleMovementComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+
+	HorsePower = 10;
 }
 
 void UVehicleMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
@@ -37,50 +39,57 @@ void UVehicleMovementComponent::AddUpwardImpulse()
 	}
 }
 
-// Sum of normals from raycasts of wheels
-FVector UVehicleMovementComponent::GetHitNormalSum()
+// Avg of normals from raycasts of wheels
+FVector UVehicleMovementComponent::GetAvgSurfaceNormal()
 {
-	FVector NormalSum;
+	FVector NormalAvg;
 	// Add vectors together
 	for (auto w : VehicleWheels)
 	{
-		NormalSum += w->Hit.ImpactNormal;
+		NormalAvg += w->Hit.ImpactNormal;
 	}
 	// Normalise vectors
-	NormalSum.Normalize();
-	return NormalSum;
+	NormalAvg = NormalAvg / 4;
+	NormalAvg.Normalize();
+	return NormalAvg;
 }
 
-// Sum of vectors from raycasts of wheels
-FVector UVehicleMovementComponent::GetWheelLineTraceVectorSum()
+// Avg of Surface impact points of wheels
+FVector UVehicleMovementComponent::GetSurfaceImpactPointAvg()
 {
-	FVector WheelLineTraceVector;
+	FVector ImpactPointAvg;
 	// Add vectors together
 	for (auto w : VehicleWheels)
 	{
-		WheelLineTraceVector += w->Hit.TraceEnd;
+		ImpactPointAvg += w->Hit.ImpactPoint;
 	}
 	// Normalise vectors
-	WheelLineTraceVector.Normalize();
-	return WheelLineTraceVector;
+	ImpactPointAvg = ImpactPointAvg / 4;
+	return ImpactPointAvg;
+}
 
-	return WheelLineTraceVector;
+int UVehicleMovementComponent::WheelsGrounded()
+{
+	int WheelCount = 0;
+	for (auto w : VehicleWheels)
+	{
+		WheelCount += w->Hit.bBlockingHit;
+	}
+
+	return WheelCount;
 }
 
 void UVehicleMovementComponent::Accelerate(float Throttle)
 {
-	// Use wheel impact details to find vehicle's forward direction
-	// Find cross product of line trace vector and normal vector (return vector perpendicular to both)
-	auto HitCrossProduct = FVector::CrossProduct(GetHitNormalSum(), GetWheelLineTraceVectorSum());
-	// Find cross prod of last cross product and normal vector to get forward vector
-	auto TripleCrossProduct = FVector::CrossProduct(GetHitNormalSum(), HitCrossProduct);
-	// Add accelerating/braking force to lower position than centre of mass, towards front of vehicle
-	VehicleMesh->AddForceAtLocation(TripleCrossProduct * Throttle * 10, VehicleMesh->GetCenterOfMass());
+	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle * HorsePower;
+	auto FowardForce = VehicleMesh->GetForwardVector() * AcceleratingPower;
+	UKismetSystemLibrary::PrintString(this, "Accelerating", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+
+	VehicleMesh->AddForce(FowardForce, "NAME_None", true);
 }
 
 void UVehicleMovementComponent::BrakeReverse()
 {
-
 }
 
 void UVehicleMovementComponent::Turn()

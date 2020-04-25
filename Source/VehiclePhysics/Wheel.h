@@ -32,6 +32,7 @@ public:
 
 	float SpringCompressionRatio;
 
+	UPROPERTY(BlueprintReadWrite, Category = "HitResult")
 	FHitResult Hit;
 
 	FVector TraceEndLocation;

@@ -30,12 +30,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "VehicleCamera")
 	UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VehicleWheel")
 	UWheel* Wheel1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VehicleWheel")
 	UWheel* Wheel2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VehicleWheel")
 	UWheel* Wheel3;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VehicleWheel")
 	UWheel* Wheel4;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelSuspension")
@@ -47,12 +51,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "WheelSuspension")
 	float DampeningCoefficient;
 
+	UPROPERTY(BlueprintReadOnly)
 	TArray<UWheel*> VehicleWheelArray;
 
 	float Throttle;
 
 protected:
-	
+	UPROPERTY(BlueprintReadOnly)
 	UVehicleMovementComponent* VehicleMovement;
 
 	// Called when the game starts or when spawned
@@ -74,4 +79,5 @@ public:
 	UFUNCTION()
 	void AccelerateBrake(float Value);
 
+	
 };

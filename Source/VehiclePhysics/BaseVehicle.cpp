@@ -68,7 +68,6 @@ void ABaseVehicle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AccelerateBrake(Throttle);
 }
 
 // REFACTOR
@@ -106,9 +105,10 @@ void ABaseVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void ABaseVehicle::AccelerateBrake(float Value)
 {
 	Throttle = Value;
-	if (Value != 0 && VehicleMovement)
+	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Throttle: "), Throttle), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+	if (VehicleMovement->WheelsGrounded() == 4)
 	{
-		UKismetSystemLibrary::PrintString(this, "Base Vehicle Throttle pressed", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+		UKismetSystemLibrary::PrintString(this, "Vehicle is Grounded", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
 
 		VehicleMovement->Accelerate(Value);
 	}

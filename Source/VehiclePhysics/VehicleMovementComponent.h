@@ -23,6 +23,8 @@ public:
 
 	TArray<UWheel*> VehicleWheels;
 
+	float HorsePower;
+
 public:
 
 	UFUNCTION()
@@ -34,7 +36,7 @@ public:
 	UFUNCTION()
 	void AddUpwardImpulse();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void Accelerate(float Throttle);
 
 	UFUNCTION()
@@ -47,10 +49,13 @@ public:
 	void SetVehicleWheels(TArray<UWheel*> Wheels);
 
 	UFUNCTION()
-	FVector GetHitNormalSum();
+	FVector GetAvgSurfaceNormal();
 
 	UFUNCTION()
-	FVector GetWheelLineTraceVectorSum();
+	FVector GetSurfaceImpactPointAvg();
+
+	UFUNCTION(BlueprintCallable)
+	int WheelsGrounded();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
