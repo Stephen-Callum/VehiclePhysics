@@ -21,9 +21,21 @@ class VEHICLEPHYSICS_API UVehicleMovementComponent : public UActorComponent
 public:
 	UStaticMeshComponent* VehicleMesh;
 
-	TArray<UWheel*> VehicleWheels;
+	TArray<UWheel*> VehicleWheelArr;
 
 	float HorsePower;
+
+	float SteeringPower;
+
+	UPROPERTY(EditAnywhere, Category = "Turning Forces")
+	float LinearDamping;
+
+	UPROPERTY(EditAnywhere, Category = "Turning Forces")
+	float AngularDamping;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 public:
 
@@ -40,22 +52,16 @@ public:
 	void Accelerate(float Throttle);
 
 	UFUNCTION()
-	void BrakeReverse();
-
-	UFUNCTION()
-	void Turn();
+	void Turn(float SteeringDirection);
 
 	UFUNCTION()
 	void SetVehicleWheels(TArray<UWheel*> Wheels);
 
-	UFUNCTION()
-	FVector GetAvgSurfaceNormal();
-
-	UFUNCTION()
-	FVector GetSurfaceImpactPointAvg();
-
 	UFUNCTION(BlueprintCallable)
 	int WheelsGrounded();
+
+	UFUNCTION()
+	void SetDampingForces(float _LinearDamping, float _AngularDamping);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

@@ -28,7 +28,7 @@ public:
 
 	float SpringCoefficient;
 
-	float DampeningCoefficient;
+	float DampingCoefficient;
 
 	float SpringCompressionRatio;
 

@@ -61,7 +61,7 @@ void UWheel::Suspension()
 		float Force = SpringCoefficient * SpringCompressionDelta;
 
 		// Calculate Dampening d
-		float Dampening = ((SpringCompressionDelta - PreviousCompressionDelta) / GetWorld()->DeltaTimeSeconds) * DampeningCoefficient;
+		float Dampening = ((SpringCompressionDelta - PreviousCompressionDelta) / GetWorld()->DeltaTimeSeconds) * DampingCoefficient;
 
 		float SpringForce = Force + Dampening;
 

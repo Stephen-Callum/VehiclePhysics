@@ -13,18 +13,26 @@ UVehicleMovementComponent::UVehicleMovementComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	HorsePower = 10;
+}
+
+void UVehicleMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	VehicleMesh->SetLinearDamping(LinearDamping);
+	VehicleMesh->SetAngularDamping(AngularDamping);
 }
 
 void UVehicleMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	for (UWheel* w : VehicleWheels)
+	for (UWheel* w : VehicleWheelArr)
 	{
 		w->Suspension();
 	}
 }
+
 // Apply upward force from below vehicle mesh
 void UVehicleMovementComponent::AddUpwardImpulse()
 {
@@ -39,39 +47,16 @@ void UVehicleMovementComponent::AddUpwardImpulse()
 	}
 }
 
-// Avg of normals from raycasts of wheels
-FVector UVehicleMovementComponent::GetAvgSurfaceNormal()
+void UVehicleMovementComponent::SetDampingForces(float _LinearDamping, float _AngularDamping)
 {
-	FVector NormalAvg;
-	// Add vectors together
-	for (auto w : VehicleWheels)
-	{
-		NormalAvg += w->Hit.ImpactNormal;
-	}
-	// Normalise vectors
-	NormalAvg = NormalAvg / 4;
-	NormalAvg.Normalize();
-	return NormalAvg;
-}
-
-// Avg of Surface impact points of wheels
-FVector UVehicleMovementComponent::GetSurfaceImpactPointAvg()
-{
-	FVector ImpactPointAvg;
-	// Add vectors together
-	for (auto w : VehicleWheels)
-	{
-		ImpactPointAvg += w->Hit.ImpactPoint;
-	}
-	// Normalise vectors
-	ImpactPointAvg = ImpactPointAvg / 4;
-	return ImpactPointAvg;
+	LinearDamping = _LinearDamping;
+	AngularDamping = _AngularDamping;
 }
 
 int UVehicleMovementComponent::WheelsGrounded()
 {
 	int WheelCount = 0;
-	for (auto w : VehicleWheels)
+	for (UWheel* w : VehicleWheelArr)
 	{
 		WheelCount += w->Hit.bBlockingHit;
 	}
@@ -79,28 +64,28 @@ int UVehicleMovementComponent::WheelsGrounded()
 	return WheelCount;
 }
 
+// Acceleration/Braking and reversing
 void UVehicleMovementComponent::Accelerate(float Throttle)
 {
-	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle * HorsePower;
-	auto FowardForce = VehicleMesh->GetForwardVector() * AcceleratingPower;
-	UKismetSystemLibrary::PrintString(this, "Accelerating", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle / HorsePower;
+	auto ForwardForce = VehicleMesh->GetForwardVector() * AcceleratingPower;
+	//UKismetSystemLibrary::PrintString(this, "Accelerating", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
 
-	VehicleMesh->AddForce(FowardForce, "NAME_None", true);
+	//VehicleMesh->AddForce(ForwardForce, "NAME_None", true);
+	VehicleMesh->SetPhysicsLinearVelocity(ForwardForce, true);
 }
 
-void UVehicleMovementComponent::BrakeReverse()
+void UVehicleMovementComponent::Turn(float SteeringDirection)
 {
-}
-
-void UVehicleMovementComponent::Turn()
-{
+	UKismetSystemLibrary::PrintString(this, "VehicleMovementComponent Turning", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
 	// Apply torque on Z axis of vehicle
+	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
 }
 
 // Set VehicleWheels array (called from BaseVehicle)
 void UVehicleMovementComponent::SetVehicleWheels(TArray<UWheel*> Wheels)
 {
-	VehicleWheels = Wheels;
+	VehicleWheelArr = Wheels;
 }
 
 // Set the reference to the BaseVehicle mesh

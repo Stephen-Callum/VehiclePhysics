@@ -16,10 +16,10 @@ UCLASS()
 class VEHICLEPHYSICS_API ABaseVehicle : public APawn
 {
 	GENERATED_BODY()
-
 public:
 	// Sets default values for this pawn's properties
 	ABaseVehicle();
+	UActorComponent* Actor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* VehicleMesh;
@@ -49,16 +49,26 @@ public:
 	float SpringCoefficient;
 	
 	UPROPERTY(EditAnywhere, Category = "WheelSuspension")
-	float DampeningCoefficient;
+	float DampingCoefficient;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<UWheel*> VehicleWheelArray;
+	TArray<UWheel*> VehicleWheelArr;
 
-	float Throttle;
+	UPROPERTY(EditAnywhere, Category = "Steering")
+	float LinearDamping;
+	
+	UPROPERTY(EditAnywhere, Category = "Steering")
+	float AngularDamping;
+
+	UPROPERTY(EditAnywhere, Category = "CarEngine")
+	float HorsePower;
+
+	UPROPERTY(EditAnywhere, Category = "Steering")
+	float SteeringPower;
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
-	UVehicleMovementComponent* VehicleMovement;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UVehicleMovementComponent* VehicleMoveComp;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -79,5 +89,6 @@ public:
 	UFUNCTION()
 	void AccelerateBrake(float Value);
 
-	
+	UFUNCTION()
+	void TurnRight(float Value);
 };
