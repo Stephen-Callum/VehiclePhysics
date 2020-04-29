@@ -19,8 +19,8 @@ void UVehicleMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	VehicleMesh->SetLinearDamping(LinearDamping);
-	VehicleMesh->SetAngularDamping(AngularDamping);
+	/*VehicleMesh->SetLinearDamping(LinearDamping);
+	VehicleMesh->SetAngularDamping(AngularDamping);*/
 }
 
 void UVehicleMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
@@ -65,20 +65,33 @@ int UVehicleMovementComponent::WheelsGrounded()
 }
 
 // Acceleration/Braking and reversing
-void UVehicleMovementComponent::Accelerate(float Throttle)
+void UVehicleMovementComponent::Accelerate(float _Throttle)
 {
-	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle / HorsePower;
-	auto ForwardForce = VehicleMesh->GetForwardVector() * AcceleratingPower;
-	//UKismetSystemLibrary::PrintString(this, "Accelerating", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+	Throttle = _Throttle;
+	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle * HorsePower;
+	ForwardForce = VehicleMesh->GetForwardVector() * AcceleratingPower;
 
-	//VehicleMesh->AddForce(ForwardForce, "NAME_None", true);
-	VehicleMesh->SetPhysicsLinearVelocity(ForwardForce, true);
+	VehicleMesh->AddForce(ForwardForce, "NAME_None", true);
+	//VehicleMesh->SetPhysicsLinearVelocity(ForwardForce, true);
 }
 
 void UVehicleMovementComponent::Turn(float SteeringDirection)
 {
-	UKismetSystemLibrary::PrintString(this, "VehicleMovementComponent Turning", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-	// Apply torque on Z axis of vehicle
+	// Turning power related to Acceleration
+	//SteeringPower *= ForwardForce.Y;
+	//// Apply torque on Z axis of vehicle
+	//if (ForwardForce.Y > 0)
+	//{
+	//	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
+	//}
+	//else if (ForwardForce.Y < 0)
+	//{
+	//	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * -SteeringDirection, "NAME_None", true);
+	//}
+	//else
+	//{
+	//	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
+	//}
 	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
 }
 

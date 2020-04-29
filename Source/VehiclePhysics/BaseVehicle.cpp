@@ -12,7 +12,6 @@ ABaseVehicle::ABaseVehicle()
 
 	VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
 	VehicleMesh->SetSimulatePhysics(true);
-	VehicleMesh->SetMassOverrideInKg("NAME_None", 1000.0f, true);
 	VehicleMesh->SetCenterOfMass(FVector(0, 0, -40));
 	RootComponent = VehicleMesh;
 
@@ -23,14 +22,10 @@ ABaseVehicle::ABaseVehicle()
 	Camera->AttachToComponent(SpringArm, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
 
 	// Add vehicle movement component
-	VehicleMoveComp = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
-	VehicleMoveComp->SetVehicleMesh(VehicleMesh);
+	VehicleMoveComponent = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
+	VehicleMoveComponent->SetVehicleMesh(VehicleMesh);
 
-	// Set Linear/Angular damping variables
-	VehicleMesh->SetLinearDamping(VehicleMoveComp->LinearDamping);
-	VehicleMesh->SetAngularDamping(VehicleMoveComp->AngularDamping);
-
-	// Create and add WheelPoint to mesh
+	// Create and add Wheels to mesh
 	Wheel1 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
 	Wheel2 = CreateDefaultSubobject<UWheel>(TEXT("Wheel2"));
 	Wheel3 = CreateDefaultSubobject<UWheel>(TEXT("Wheel3"));
@@ -41,10 +36,10 @@ ABaseVehicle::ABaseVehicle()
 	Wheel3->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	Wheel4->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 
-	Wheel1->VehicleMovementRef = VehicleMoveComp;
-	Wheel2->VehicleMovementRef = VehicleMoveComp;
-	Wheel3->VehicleMovementRef = VehicleMoveComp;
-	Wheel4->VehicleMovementRef = VehicleMoveComp;
+	Wheel1->VehicleMovementRef = VehicleMoveComponent;
+	Wheel2->VehicleMovementRef = VehicleMoveComponent;
+	Wheel3->VehicleMovementRef = VehicleMoveComponent;
+	Wheel4->VehicleMovementRef = VehicleMoveComponent;
 
 	// Create wheel array
 	VehicleWheelArr.Emplace(Wheel1);
@@ -53,12 +48,9 @@ ABaseVehicle::ABaseVehicle()
 	VehicleWheelArr.Emplace(Wheel4);
 
 	// Give reference for wheels to VehicleMovementComponent
-	VehicleMoveComp->SetVehicleWheels(VehicleWheelArr);
-
-	// Set Vehicle Engine/Steering Properties
-	VehicleMoveComp->HorsePower = HorsePower;
-	VehicleMoveComp->SteeringPower = SteeringPower;
-	VehicleMoveComp->SetDampingForces(LinearDamping, AngularDamping);
+	VehicleMoveComponent->SetVehicleWheels(VehicleWheelArr);
+	
+	
 }
 
 // Called when the game starts or when spawned
@@ -68,6 +60,14 @@ void ABaseVehicle::BeginPlay()
 
 	// Set suspension properties
 	SetWheelProperties();
+	VehicleMesh->SetLinearDamping(LinearDamping);
+	VehicleMesh->SetAngularDamping(AngularDamping);
+	VehicleMesh->SetMassOverrideInKg("NAME_None", 1500.0f, true);
+
+	// Set Vehicle Engine/Steering Properties
+	VehicleMoveComponent->HorsePower = HorsePower;
+	VehicleMoveComponent->SteeringPower = SteeringPower;
+	VehicleMoveComponent->SetDampingForces(LinearDamping, AngularDamping);
 }
 
 // Called every frame
@@ -84,24 +84,6 @@ void ABaseVehicle::SetWheelProperties()
 		w->SpringCoefficient = SpringCoefficient;
 		w->DampingCoefficient = DampingCoefficient;
 	}
-	
-	//// Set Wheel Suspension
-	//Wheel1->SuspensionHeight = SuspensionHeight;
-	//Wheel2->SuspensionHeight = SuspensionHeight;
-	//Wheel3->SuspensionHeight = SuspensionHeight;
-	//Wheel4->SuspensionHeight = SuspensionHeight;
-
-	//// Set Suspension Spring Coefficient
-	//Wheel1->SpringCoefficient = SpringCoefficient;
-	//Wheel2->SpringCoefficient = SpringCoefficient;
-	//Wheel3->SpringCoefficient = SpringCoefficient;
-	//Wheel4->SpringCoefficient = SpringCoefficient;
-
-	//// Set Dampening Coefficient
-	//Wheel1->DampingCoefficient = DampingCoefficient;
-	//Wheel2->DampingCoefficient = DampingCoefficient;
-	//Wheel3->DampingCoefficient = DampingCoefficient;
-	//Wheel4->DampingCoefficient = DampingCoefficient;
 }
 
 // Called to bind functionality to input
@@ -117,26 +99,24 @@ void ABaseVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ABaseVehicle::AccelerateBrake(float Value)
 {
-	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Throttle: "), Throttle), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-	if (VehicleMoveComp->WheelsGrounded() == 4)
+	if (VehicleMoveComponent->WheelsGrounded() == 4)
 	{
 		//UKismetSystemLibrary::PrintString(this, "Vehicle is Grounded", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-
-		VehicleMoveComp->Accelerate(Value);
+		VehicleMoveComponent->Accelerate(Value);
 	}
 }
 
 void ABaseVehicle::TurnRight(float Value)
 {
-	UKismetSystemLibrary::PrintString(this, "Turning Button pressed", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-	VehicleMoveComp->Turn(Value);
+	//UKismetSystemLibrary::PrintString(this, "Turning Button pressed", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
+	VehicleMoveComponent->Turn(Value);
 }
 
 void ABaseVehicle::ApplyUpwardImpulse()
 {
-	if (VehicleMoveComp)
+	if (VehicleMoveComponent)
 	{
-		VehicleMoveComp->AddUpwardImpulse();
+		VehicleMoveComponent->AddUpwardImpulse();
 	}
 	else
 	{

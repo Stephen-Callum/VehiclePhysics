@@ -19,7 +19,6 @@ class VEHICLEPHYSICS_API ABaseVehicle : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ABaseVehicle();
-	UActorComponent* Actor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* VehicleMesh;
@@ -65,11 +64,11 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Steering")
 	float SteeringPower;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UVehicleMovementComponent* VehicleMoveComponent;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UVehicleMovementComponent* VehicleMoveComp;
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

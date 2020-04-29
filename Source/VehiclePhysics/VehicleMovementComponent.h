@@ -23,6 +23,7 @@ public:
 
 	TArray<UWheel*> VehicleWheelArr;
 
+	UPROPERTY(EditAnywhere, Category = "Car Engine")
 	float HorsePower;
 
 	float SteeringPower;
@@ -33,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Turning Forces")
 	float AngularDamping;
 
+	float Throttle;
+
+	FVector ForwardForce;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,7 +53,7 @@ public:
 	void AddUpwardImpulse();
 
 	UFUNCTION(BlueprintCallable)
-	void Accelerate(float Throttle);
+	void Accelerate(float _Throttle);
 
 	UFUNCTION()
 	void Turn(float SteeringDirection);
