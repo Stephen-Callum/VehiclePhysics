@@ -19,8 +19,7 @@ void UVehicleMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*VehicleMesh->SetLinearDamping(LinearDamping);
-	VehicleMesh->SetAngularDamping(AngularDamping);*/
+	
 }
 
 void UVehicleMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
@@ -31,6 +30,8 @@ void UVehicleMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		w->Suspension();
 	}
+	VehicleMesh->SetLinearDamping(LinearDamping);
+	VehicleMesh->SetAngularDamping(AngularDamping);
 }
 
 // Apply upward force from below vehicle mesh
@@ -69,29 +70,16 @@ void UVehicleMovementComponent::Accelerate(float _Throttle)
 {
 	Throttle = _Throttle;
 	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle * HorsePower;
-	ForwardForce = VehicleMesh->GetForwardVector() * AcceleratingPower;
+	ForwardForce = VehicleMesh->GetRightVector() * AcceleratingPower;
 
-	VehicleMesh->AddForce(ForwardForce, "NAME_None", true);
+	VehicleMesh->AddForceAtLocation(ForwardForce, AccelerationPoint->GetComponentLocation(),"NAME_None");
 	//VehicleMesh->SetPhysicsLinearVelocity(ForwardForce, true);
 }
 
 void UVehicleMovementComponent::Turn(float SteeringDirection)
 {
-	// Turning power related to Acceleration
-	//SteeringPower *= ForwardForce.Y;
-	//// Apply torque on Z axis of vehicle
-	//if (ForwardForce.Y > 0)
-	//{
-	//	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
-	//}
-	//else if (ForwardForce.Y < 0)
-	//{
-	//	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * -SteeringDirection, "NAME_None", true);
-	//}
-	//else
-	//{
-	//	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
-	//}
+	//SteeringPower += ForwardForce.X;
+	
 	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
 }
 

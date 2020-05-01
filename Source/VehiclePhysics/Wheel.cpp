@@ -49,7 +49,7 @@ void UWheel::Suspension()
 	GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, TraceEndLocation, ECollisionChannel::ECC_WorldDynamic, CollisionParameters);
 	
 	// Draw debug line
-	DrawDebugLine(GetWorld(), StartLocation, TraceEndLocation, FColor::Green, true, -1, 0, 3.f);
+	//DrawDebugLine(GetWorld(), StartLocation, TraceEndLocation, FColor::Green, true, -1, 0, 3.f);
 
 	// If line trace hits
 	if (Hit.bBlockingHit)
@@ -68,7 +68,7 @@ void UWheel::Suspension()
 		//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("WorldDeltaTime: %f Dampening: %f SpringForce: %f"), GetWorld()->DeltaTimeSeconds, Dampening, SpringForce), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
 		
 		// ApplyForceAtLocation(F+d, componentlocation);
-		VehicleMovementRef->VehicleMesh->AddForceAtLocation(GetUpVector() * SpringForce, GetComponentLocation());
+		VehicleMovementComp->VehicleMesh->AddForceAtLocation(GetUpVector() * SpringForce, GetComponentLocation());
 	}
 
 	PreviousCompressionDelta = SpringCompressionDelta;

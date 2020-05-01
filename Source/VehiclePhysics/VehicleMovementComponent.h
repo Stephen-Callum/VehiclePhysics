@@ -28,15 +28,17 @@ public:
 
 	float SteeringPower;
 
-	UPROPERTY(EditAnywhere, Category = "Turning Forces")
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Turning Forces")
 	float LinearDamping;
 
-	UPROPERTY(EditAnywhere, Category = "Turning Forces")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turning Forces")
 	float AngularDamping;
 
 	float Throttle;
 
 	FVector ForwardForce;
+
+	USceneComponent* AccelerationPoint;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

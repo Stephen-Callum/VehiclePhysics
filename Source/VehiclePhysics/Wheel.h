@@ -18,7 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UWheel();
 
-	UVehicleMovementComponent* VehicleMovementRef;
+	UVehicleMovementComponent* VehicleMovementComp;
 
 	float SuspensionHeight;
 

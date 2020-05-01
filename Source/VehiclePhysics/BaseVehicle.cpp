@@ -9,17 +9,22 @@ ABaseVehicle::ABaseVehicle()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	SetRootComponent(BoxCollider);
 	VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
+	VehicleMesh->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
 	VehicleMesh->SetSimulatePhysics(true);
-	VehicleMesh->SetCenterOfMass(FVector(0, 0, -40));
-	RootComponent = VehicleMesh;
+	//VehicleMesh->SetCenterOfMass(FVector(0, 0, -40));
 
 	// Create spring arm and camera, attach spring arm to root and camera to spring arm
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->AttachToComponent(SpringArm, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false));
+	Camera->AttachToComponent(SpringArm, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false));
+
+	// Create point of acceleration for vehicle
+	AccelerationPoint = CreateDefaultSubobject<USceneComponent>(TEXT("AccelerationPoint"));
+	AccelerationPoint->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
 
 	// Add vehicle movement component
 	VehicleMoveComponent = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
@@ -36,10 +41,10 @@ ABaseVehicle::ABaseVehicle()
 	Wheel3->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 	Wheel4->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 
-	Wheel1->VehicleMovementRef = VehicleMoveComponent;
-	Wheel2->VehicleMovementRef = VehicleMoveComponent;
-	Wheel3->VehicleMovementRef = VehicleMoveComponent;
-	Wheel4->VehicleMovementRef = VehicleMoveComponent;
+	Wheel1->VehicleMovementComp = VehicleMoveComponent;
+	Wheel2->VehicleMovementComp = VehicleMoveComponent;
+	Wheel3->VehicleMovementComp = VehicleMoveComponent;
+	Wheel4->VehicleMovementComp = VehicleMoveComponent;
 
 	// Create wheel array
 	VehicleWheelArr.Emplace(Wheel1);
@@ -49,8 +54,7 @@ ABaseVehicle::ABaseVehicle()
 
 	// Give reference for wheels to VehicleMovementComponent
 	VehicleMoveComponent->SetVehicleWheels(VehicleWheelArr);
-	
-	
+	VehicleMoveComponent->AccelerationPoint = AccelerationPoint;
 }
 
 // Called when the game starts or when spawned
@@ -60,8 +64,8 @@ void ABaseVehicle::BeginPlay()
 
 	// Set suspension properties
 	SetWheelProperties();
-	VehicleMesh->SetLinearDamping(LinearDamping);
-	VehicleMesh->SetAngularDamping(AngularDamping);
+	/*VehicleMesh->SetLinearDamping(LinearDamping);
+	VehicleMesh->SetAngularDamping(AngularDamping);*/
 	VehicleMesh->SetMassOverrideInKg("NAME_None", 1500.0f, true);
 
 	// Set Vehicle Engine/Steering Properties

@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "BaseVehicle.generated.h"
 
 UCLASS()
@@ -19,6 +20,9 @@ class VEHICLEPHYSICS_API ABaseVehicle : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ABaseVehicle();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* BoxCollider;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* VehicleMesh;
@@ -67,6 +71,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UVehicleMovementComponent* VehicleMoveComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CarEngine")
+	USceneComponent* AccelerationPoint;
 
 protected:
 	// Called when the game starts or when spawned
