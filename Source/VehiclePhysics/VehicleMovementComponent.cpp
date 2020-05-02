@@ -18,7 +18,7 @@ UVehicleMovementComponent::UVehicleMovementComponent()
 void UVehicleMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	
 }
 
@@ -30,22 +30,18 @@ void UVehicleMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		w->Suspension();
 	}
-	VehicleMesh->SetLinearDamping(LinearDamping);
-	VehicleMesh->SetAngularDamping(AngularDamping);
+
+	VehicleBoxCollider->SetLinearDamping(LinearDamping);
+	VehicleBoxCollider->SetAngularDamping(AngularDamping);
 }
 
 // Apply upward force from below vehicle mesh
 void UVehicleMovementComponent::AddUpwardImpulse()
 {
-	if (VehicleMesh)
-	{
+	
 		UKismetSystemLibrary::PrintString(this, "Adding upward Impulse", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-		VehicleMesh->AddImpulseAtLocation(FVector(0, 0, 500000), FVector(0, 0, -70) + VehicleMesh->GetComponentLocation());
-	}
-	else
-	{
-		UKismetSystemLibrary::PrintString(this, "VehicleMovementComponent::VehicleMesh NOT VALID", true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
-	}
+		//VehicleMesh->AddImpulseAtLocation(FVector(0, 0, 500000), FVector(0, 0, -70) + VehicleMesh->GetComponentLocation());
+		VehicleBoxCollider->AddImpulseAtLocation(FVector(0, 0, 500000), FVector(0, 0, -70) + VehicleBoxCollider->GetComponentLocation());
 }
 
 void UVehicleMovementComponent::SetDampingForces(float _LinearDamping, float _AngularDamping)
@@ -61,7 +57,6 @@ int UVehicleMovementComponent::WheelsGrounded()
 	{
 		WheelCount += w->Hit.bBlockingHit;
 	}
-
 	return WheelCount;
 }
 
@@ -69,10 +64,10 @@ int UVehicleMovementComponent::WheelsGrounded()
 void UVehicleMovementComponent::Accelerate(float _Throttle)
 {
 	Throttle = _Throttle;
-	auto AcceleratingPower = VehicleMesh->GetMass() * Throttle * HorsePower;
-	ForwardForce = VehicleMesh->GetRightVector() * AcceleratingPower;
+	auto AcceleratingPower = VehicleBoxCollider->GetMass() * Throttle * HorsePower;
+	ForwardForce = VehicleBoxCollider->GetRightVector() * AcceleratingPower;
 
-	VehicleMesh->AddForceAtLocation(ForwardForce, AccelerationPoint->GetComponentLocation(),"NAME_None");
+	VehicleBoxCollider->AddForceAtLocation(ForwardForce, AccelerationPoint->GetComponentLocation(),"NAME_None");
 	//VehicleMesh->SetPhysicsLinearVelocity(ForwardForce, true);
 }
 
@@ -80,7 +75,7 @@ void UVehicleMovementComponent::Turn(float SteeringDirection)
 {
 	//SteeringPower += ForwardForce.X;
 	
-	VehicleMesh->AddTorqueInDegrees(VehicleMesh->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
+	VehicleBoxCollider->AddTorqueInDegrees(VehicleBoxCollider->GetUpVector() * SteeringPower * SteeringDirection, "NAME_None", true);
 }
 
 // Set VehicleWheels array (called from BaseVehicle)
@@ -95,6 +90,14 @@ void UVehicleMovementComponent::SetVehicleMesh(UStaticMeshComponent* VehicleMesh
 	if (VehicleMeshRef)
 	{
 		VehicleMesh = VehicleMeshRef;
+	}
+}
+
+void UVehicleMovementComponent::SetPhysicsBoxCollider(UBoxComponent * VehicleCollider)
+{
+	if (VehicleCollider)
+	{
+		VehicleBoxCollider = VehicleCollider;
 	}
 }
 

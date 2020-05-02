@@ -68,7 +68,8 @@ void UWheel::Suspension()
 		//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("WorldDeltaTime: %f Dampening: %f SpringForce: %f"), GetWorld()->DeltaTimeSeconds, Dampening, SpringForce), true, true, FLinearColor(0.0f, 0.6f, 1.0f, 1.0f));
 		
 		// ApplyForceAtLocation(F+d, componentlocation);
-		VehicleMovementComp->VehicleMesh->AddForceAtLocation(GetUpVector() * SpringForce, GetComponentLocation());
+		//VehicleMovementComp->VehicleMesh->AddForceAtLocation(GetUpVector() * SpringForce, GetComponentLocation());
+		VehicleMovementComp->VehicleBoxCollider->AddForceAtLocation(GetUpVector() * SpringForce, GetComponentLocation());
 	}
 
 	PreviousCompressionDelta = SpringCompressionDelta;

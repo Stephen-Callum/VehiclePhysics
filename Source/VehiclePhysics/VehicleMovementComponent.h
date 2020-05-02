@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/MovementComponent.h"
+#include "Components/BoxComponent.h"
 #include "VehicleMovementComponent.generated.h"
 
 /**
@@ -39,14 +40,20 @@ public:
 	FVector ForwardForce;
 
 	USceneComponent* AccelerationPoint;
+
+	UBoxComponent* VehicleBoxCollider;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
 
+	// deprecated 
 	UFUNCTION()
 	void SetVehicleMesh(UStaticMeshComponent * VehicleMeshRef);
+
+	UFUNCTION()
+	void SetPhysicsBoxCollider(UBoxComponent* VehicleCollider);
 
 	UFUNCTION()
 	UStaticMeshComponent* GetVehicleMesh();

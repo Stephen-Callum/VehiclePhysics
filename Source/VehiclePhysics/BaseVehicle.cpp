@@ -11,10 +11,10 @@ ABaseVehicle::ABaseVehicle()
 	PrimaryActorTick.bCanEverTick = true;
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	SetRootComponent(BoxCollider);
+
 	VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
-	VehicleMesh->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
-	VehicleMesh->SetSimulatePhysics(true);
-	//VehicleMesh->SetCenterOfMass(FVector(0, 0, -40));
+	VehicleMesh->AttachToComponent(RootComponent, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+	BoxCollider->SetSimulatePhysics(true);
 
 	// Create spring arm and camera, attach spring arm to root and camera to spring arm
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -28,7 +28,9 @@ ABaseVehicle::ABaseVehicle()
 
 	// Add vehicle movement component
 	VehicleMoveComponent = CreateDefaultSubobject<UVehicleMovementComponent>(TEXT("VehicleMovementComponent"));
-	VehicleMoveComponent->SetVehicleMesh(VehicleMesh);
+	////deprecated
+	//VehicleMoveComponent->SetVehicleMesh(VehicleMesh);
+	VehicleMoveComponent->SetPhysicsBoxCollider(BoxCollider);
 
 	// Create and add Wheels to mesh
 	Wheel1 = CreateDefaultSubobject<UWheel>(TEXT("Wheel1"));
@@ -66,7 +68,7 @@ void ABaseVehicle::BeginPlay()
 	SetWheelProperties();
 	/*VehicleMesh->SetLinearDamping(LinearDamping);
 	VehicleMesh->SetAngularDamping(AngularDamping);*/
-	VehicleMesh->SetMassOverrideInKg("NAME_None", 1500.0f, true);
+	//VehicleMesh->SetMassOverrideInKg("NAME_None", 1500.0f, true);
 
 	// Set Vehicle Engine/Steering Properties
 	VehicleMoveComponent->HorsePower = HorsePower;
