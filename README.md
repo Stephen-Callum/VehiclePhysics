@@ -5,7 +5,7 @@ Developed with Unreal Engine 4
 A challenge for myself to create hover vehicle physics from scratch. This project includes:
 
 ## 4-point Suspension
-[Image of 4-point suspension](https://i.imgur.com/GOhpXIn.jpg)
+![Image of 4-point suspension](https://i.imgur.com/GOhpXIn.jpg)
 
 Consists of a raycast from each bottom corner of the vehicle going down for the length of the suspension. If the raycast does not hit anything, then that means the suspension is fully extended. 
 
