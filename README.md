@@ -19,4 +19,4 @@ Acceleration and braking occurs through the application of a forward force from 
 
 ## Traction
 
-Traction is achieved through the increase in the linear damping of the mesh of the vehicle.
+Traction is achieved through the increase in the linear and angular damping of the mesh of the vehicle.
